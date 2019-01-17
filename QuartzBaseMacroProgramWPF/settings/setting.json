@@ -1,0 +1,22 @@
+﻿{
+    "presskey": [
+        {
+            "sendkey": "39",
+            "cronexpression": "0 30 7 1/1 * ? *"
+        },
+        {
+            "sendkey": "39",
+            "cronexpression": "0 0 18 1/1 * ? *"
+        }
+    ],
+    "presskeymulti": [
+        {
+            "sendkeys": [
+                "17",
+                "86"
+            ],
+            "cronexpression": "0/10 0/1 * 1/1 * ? *"
+        }
+    ]
+
+}
