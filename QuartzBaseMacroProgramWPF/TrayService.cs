@@ -101,9 +101,10 @@ namespace QuartzBaseMacroProgramWPF
         {
             submenu.MenuItems.Clear();
             int i = 0;
-            foreach(var x in GlobalVars.scheduler.GetTriggers())
+            foreach(Quartz.Impl.Triggers.CronTriggerImpl x in GlobalVars.scheduler.GetTriggers())
             {
-                MenuItem newItem = new MenuItem($"{i}: {x.Description}, 다음 실행 시간 {x.GetNextFireTimeUtc().Value.LocalDateTime.ToString()}");
+                MenuItem newItem = new MenuItem($"{i}: {x.Description}, {CronExpressionDescriptor.ExpressionDescriptor.GetDescription(x.CronExpressionString)}");
+                /*,다음 실행 시간 {x.GetNextFireTimeUtc().Value.LocalDateTime.ToString()}*/
                 newItem.Enabled = false;
                 submenu.MenuItems.Add(newItem);
                 i++;
@@ -116,6 +117,16 @@ namespace QuartzBaseMacroProgramWPF
             else
             {
                 m2.Text = "매크로 재시작";
+            }
+        }
+
+        public static void ShowMSG(string msg)
+        {
+            if (notifyIcon.Visible)
+            {
+                notifyIcon.BalloonTipText = msg;
+                notifyIcon.BalloonTipTitle = System.AppDomain.CurrentDomain.FriendlyName;
+                notifyIcon.ShowBalloonTip(1);
             }
         }
 

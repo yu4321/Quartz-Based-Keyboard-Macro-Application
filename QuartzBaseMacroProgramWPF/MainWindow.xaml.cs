@@ -27,8 +27,8 @@ namespace QuartzBaseMacroProgramWPF
             GlobalVars.SetQuartzJobs();
             GlobalVars.scheduler.Start();
             TrayService.GetInstance().TurnOn();
+            TrayService.ShowMSG($"작동을 시작합니다. 현재 작업 {GlobalVars.scheduler.GetTriggers().Count}개.");
             this.Close();
-            //GlobalVars.scheduler.TestRun();
         }
 
     }

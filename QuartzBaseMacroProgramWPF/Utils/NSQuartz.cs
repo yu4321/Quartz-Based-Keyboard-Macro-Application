@@ -153,7 +153,7 @@ namespace QuartzBasedMacroProgram.Utils
             );
             if(job is PressKey)
             {
-                cronTrigger.Description = $"작업 분류: 키보드 입력, 패러미터: {param.ToString()}({(VirtualKeyCode)int.Parse(param.ToString())})";
+                cronTrigger.Description = $"작업 분류: 키보드 입력, 패러미터: {(VirtualKeyCode)int.Parse(param.ToString())}";
             }
             else if(job is ExecuteProcess)
             {
