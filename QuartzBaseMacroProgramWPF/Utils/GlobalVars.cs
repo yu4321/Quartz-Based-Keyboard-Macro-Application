@@ -1,16 +1,10 @@
 ﻿using Newtonsoft.Json;
-using QuartzBaseMacroProgramWPF;
 using QuartzBaseMacroProgramWPF.Model;
-using QuartzBaseMacroProgramWPF.Utils;
 using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using WindowsInput.Native;
 
-namespace QuartzBasedMacroProgram.Utils
+namespace QuartzBaseMacroProgramWPF.Utils
 {
     public static class GlobalVars
     {
@@ -20,11 +14,14 @@ namespace QuartzBasedMacroProgram.Utils
         public static List<string> nextApps = new List<string>();
         public static int curIndex;
         public static bool isworking;
+        public static bool istimerticking;
+
         private static JsonSerializerSettings settings = new JsonSerializerSettings
         {
             NullValueHandling = NullValueHandling.Ignore,
             MissingMemberHandling = MissingMemberHandling.Ignore
         };
+
         public static string curAppName
         {
             get
@@ -72,25 +69,6 @@ namespace QuartzBasedMacroProgram.Utils
                     {
                         continue;
                     }
-                    //try
-                    //{
-                    //    PressKey newjob = new PressKey();
-                    //    int param = x.sendkey.Length > 1? (int)Enum.Parse(typeof(VirtualKeyCode), x.sendkey.ToUpper()) : (int)Enum.Parse(typeof(VirtualKeyCode),("VK_"+x.sendkey).ToUpper());
-                    //    GlobalVars.scheduler.AddJobRow(x.cronexpression, newjob, param);
-                    //}
-                    //catch
-                    //{
-                    //    try
-                    //    {
-                    //        PressKey newjob = new PressKey();
-                    //        int param = (int)Enum.Parse(typeof(VirtualKeyCode), x.sendkey.ToUpper().Replace("VK_",""));
-                    //        GlobalVars.scheduler.AddJobRow(x.cronexpression, newjob, param);
-                    //    }
-                    //    catch
-                    //    {
-                    //        continue;
-                    //    }
-                    //}
                 }
             }
             else
@@ -138,13 +116,12 @@ namespace QuartzBasedMacroProgram.Utils
                     {
                         continue;
                     }
-                    
                 }
             }
 
             if (currentSetting.parsemode == "string")
             {
-                foreach(var x in mainSchedule.sequencekey)
+                foreach (var x in mainSchedule.sequencekey)
                 {
                     SequenceKeyData param = new SequenceKeyData();
                     if (x.holdkey != string.Empty)
@@ -160,7 +137,7 @@ namespace QuartzBasedMacroProgram.Utils
                     param.interval = TimeSpan.FromSeconds(x.interval);
                     param.unholdafter = x.unholdafter;
                     param.reholdafter = x.reholdafter;
-                    param.sendkeys= x.sendkeys.ConvertAll(KeyboardInputs.VKStringtoInt);
+                    param.sendkeys = x.sendkeys.ConvertAll(KeyboardInputs.VKStringtoInt);
                     param.sendkeys.Insert(0, 0);
                     param.isholding = true;
                     GlobalVars.scheduler.AddJobRow(x.cronexpression, new SequenceKey(), param);
@@ -190,41 +167,7 @@ namespace QuartzBasedMacroProgram.Utils
                     GlobalVars.scheduler.AddJobRow(x.cronexpression, new SequenceKey(), param);
                 }
             }
-
-            //foreach (var x in mainSchedule.presskeymulti)
-            //{
-            //    if (currentSetting.parsemode == "string")
-            //    {
-            //        try
-            //        {
-            //            PressKeyMulti newjob = new PressKeyMulti();
-            //            List<int> param = x.sendkeys.ConvertAll(
-            //                delegate(string s)
-            //                {
-            //                    return s.Length>1? (int)Enum.Parse(typeof(VirtualKeyCode), s.ToUpper()) : (int)Enum.Parse(typeof(VirtualKeyCode), "VK_" + s.ToUpper());
-            //                });
-            //            GlobalVars.scheduler.AddJobRow(x.cronexpression, newjob, param);
-            //        }
-            //        catch
-            //        {
-            //            continue;
-            //        }
-            //    }
-            //    else
-            //    {
-            //        try
-            //        {
-            //            PressKeyMulti newjob = new PressKeyMulti();
-            //            GlobalVars.scheduler.AddJobRow(x.cronexpression, newjob, x.sendkeys.ConvertAll(int.Parse));
-            //        }
-            //        catch
-            //        {
-            //            continue;
-            //        }
-            //    }
-            //}
             App.Logger.Info(GlobalVars.scheduler.GetAllGroupList());
         }
     }
-
 }

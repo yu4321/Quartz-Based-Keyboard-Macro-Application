@@ -10,6 +10,5 @@
         Title="MVVM Light Application"
         DataContext="{Binding Main, Source={StaticResource Locator}}">
     <Grid>
-        
     </Grid>
 </Window>

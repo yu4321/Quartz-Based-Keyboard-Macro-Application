@@ -1,16 +1,16 @@
-﻿using System;
+﻿using Quartz;
+using Quartz.Impl;
+using Quartz.Impl.Matchers;
+using Quartz.Impl.Triggers;
+using QuartzBaseMacroProgramWPF.Model;
+using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Text;
-using Quartz;
-using Quartz.Impl;
-using Quartz.Impl.Matchers;
-using Quartz.Impl.Triggers;
 using WindowsInput.Native;
-using QuartzBaseMacroProgramWPF.Model;
 
-namespace QuartzBasedMacroProgram.Utils
+namespace QuartzBaseMacroProgramWPF.Utils
 {
     public class NSQuartz : IDisposable
     {
@@ -87,6 +87,7 @@ namespace QuartzBasedMacroProgram.Utils
         {
             if (!_scheduler.IsStarted)
             {
+                new Timer().ShowDialog();
                 _scheduler.ResumeAll();
 
                 _scheduler.Start();
@@ -109,6 +110,7 @@ namespace QuartzBasedMacroProgram.Utils
             }
             else
             {
+                new Timer().ShowDialog();
                 _scheduler.ResumeAll();
 
                 _scheduler.Start();
@@ -129,12 +131,12 @@ namespace QuartzBasedMacroProgram.Utils
 
         public void TestRun()
         {
-            Console.WriteLine("-Scheduling Jobs-");
+            Debug.WriteLine("-Scheduling Jobs-");
             //DateTimeOffset startTime = DateBuilder.NextGivenSecondDate(null, 15);
             IJobDetail jobDetail = JobBuilder.Create<SimpleJob>().WithIdentity("job1", jobGroup).Build();
             ICronTrigger cronTrigger = (ICronTrigger)TriggerBuilder.Create().WithIdentity("trigger1", jobGroup).WithCronSchedule("0/2 * * * * ?").StartNow().Build();
             DateTimeOffset? ft = _scheduler.ScheduleJob(jobDetail, cronTrigger).Result;
-            Console.WriteLine($"{jobDetail.Key} has been scheduled to run at {ft} and repeat based on expression: {cronTrigger.CronExpressionString}");
+            Debug.WriteLine($"{jobDetail.Key} has been scheduled to run at {ft} and repeat based on expression: {cronTrigger.CronExpressionString}");
             this.Start();
         }
 
@@ -151,15 +153,15 @@ namespace QuartzBasedMacroProgram.Utils
                 jobGroup,
                 cronExpression
             );
-            if(job is PressKey)
+            if (job is PressKey)
             {
                 cronTrigger.Description = $"작업 분류: 키보드 입력, 패러미터: {(VirtualKeyCode)int.Parse(param.ToString())}";
             }
-            else if(job is PressKeyMulti)
+            else if (job is PressKeyMulti)
             {
                 cronTrigger.Description = $"작업 분류: 키보드 다중 입력, 패러미터: {string.Join(", ", ((List<int>)param).Cast<VirtualKeyCode>().ToArray())}";
             }
-            else if(job is SequenceKey)
+            else if (job is SequenceKey)
             {
                 cronTrigger.Description = $"작업 분류: 키보드 연속 입력, 패러미터: {(VirtualKeyCode)((SequenceKeyData)param).holdkey} and {string.Join(", ", ((SequenceKeyData)param).sendkeys.Cast<VirtualKeyCode>().ToArray())}";
             }
@@ -221,7 +223,7 @@ namespace QuartzBasedMacroProgram.Utils
 
         /// <summary>
         /// <para>
-        /// 외부에서 대부분의 경우 호출하도록 되어있는 간접적 작업 추가 메서드. 
+        /// 외부에서 대부분의 경우 호출하도록 되어있는 간접적 작업 추가 메서드.
         /// </para>
         /// timeJob에서의 시작시간에 시각 작업을 하는 것과 끝 시간에 끝 작업을 하는 두가지 작업을 동시에 추가한다.
         /// </summary>

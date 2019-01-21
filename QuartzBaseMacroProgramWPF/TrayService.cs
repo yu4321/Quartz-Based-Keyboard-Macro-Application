@@ -1,9 +1,7 @@
-﻿using QuartzBasedMacroProgram.Utils;
+﻿using QuartzBaseMacroProgramWPF.Utils;
 using System;
 using System.Diagnostics;
-using System.Linq;
 using System.Windows.Forms;
-using System.Windows.Threading;
 
 namespace QuartzBaseMacroProgramWPF
 {
@@ -19,17 +17,16 @@ namespace QuartzBaseMacroProgramWPF
 
         private static TrayService instance = new TrayService();
         public static NotifyIcon notifyIcon;
-        ContextMenu menu;
-        MenuItem submenu;
-        MenuItem m1;
-        MenuItem m2;
-        MenuItem m3;
-        MenuItem m4;
-
+        private ContextMenu menu;
+        private MenuItem submenu;
+        private MenuItem m1;
+        private MenuItem m2;
+        private MenuItem m3;
+        private MenuItem m4;
 
         private TrayService()
         {
-            Console.WriteLine("start tray");
+            Debug.WriteLine("start tray");
             notifyIcon = new NotifyIcon();
             menu = new ContextMenu();
             submenu = new MenuItem()
@@ -80,12 +77,12 @@ namespace QuartzBaseMacroProgramWPF
                 GlobalVars.SetQuartzJobs();
             };
 
-            menu.MenuItems.Add(m1);
-            menu.MenuItems.Add(m2);
-            menu.MenuItems.Add(m3);
-            menu.MenuItems.Add(m4);
             menu.MenuItems.Add(submenu);
-            
+            menu.MenuItems.Add(m4);
+            menu.MenuItems.Add(m3);
+            menu.MenuItems.Add(m2);
+            menu.MenuItems.Add(m1);
+
             notifyIcon.ContextMenu = menu;
 
             notifyIcon.Text = "키보드 매크로 스케줄러 - 실행중";
@@ -101,7 +98,7 @@ namespace QuartzBaseMacroProgramWPF
         {
             submenu.MenuItems.Clear();
             int i = 0;
-            foreach(Quartz.Impl.Triggers.CronTriggerImpl x in GlobalVars.scheduler.GetTriggers())
+            foreach (Quartz.Impl.Triggers.CronTriggerImpl x in GlobalVars.scheduler.GetTriggers())
             {
                 MenuItem newItem = new MenuItem($"{i}: {x.Description}, {CronExpressionDescriptor.ExpressionDescriptor.GetDescription(x.CronExpressionString)}");
                 /*,다음 실행 시간 {x.GetNextFireTimeUtc().Value.LocalDateTime.ToString()}*/
@@ -118,6 +115,8 @@ namespace QuartzBaseMacroProgramWPF
             {
                 m2.Text = "매크로 재시작";
             }
+
+            m2.Enabled = m4.Enabled = !GlobalVars.istimerticking;
         }
 
         public static void ShowMSG(string msg)
@@ -141,6 +140,7 @@ namespace QuartzBaseMacroProgramWPF
         }
 
         #region IDisposable Support
+
         private bool disposedValue = false; // 중복 호출을 검색하려면
 
         protected virtual void Dispose(bool disposing)
@@ -180,6 +180,7 @@ namespace QuartzBaseMacroProgramWPF
             // TODO: 위의 종료자가 재정의된 경우 다음 코드 줄의 주석 처리를 제거합니다.
             // GC.SuppressFinalize(this);
         }
-        #endregion
+
+        #endregion IDisposable Support
     }
 }

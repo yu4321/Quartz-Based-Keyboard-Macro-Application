@@ -1,19 +1,13 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows;
-using Quartz;
-using System.IO;
-using System.Diagnostics;
-using System.Windows.Forms;
-using QuartzBaseMacroProgramWPF.Utils;
+﻿using Quartz;
 using QuartzBaseMacroProgramWPF.Model;
+using System;
+using System.Collections.Generic;
+using System.Diagnostics;
 using System.Threading;
+using System.Threading.Tasks;
 using WindowsInput.Native;
 
-namespace QuartzBasedMacroProgram.Utils
+namespace QuartzBaseMacroProgramWPF.Utils
 {
     public class PressKey : IJob
     {
@@ -23,7 +17,8 @@ namespace QuartzBasedMacroProgram.Utils
             int targetkey = dataMap.GetInt("param");
             try
             {
-                Task task = Task.Run(() => {
+                Task task = Task.Run(() =>
+                {
                     KeyboardInputs.PressKey(targetkey);
                 });
 
@@ -41,11 +36,9 @@ namespace QuartzBasedMacroProgram.Utils
                 }
 
                 await Task.Delay(100);
-
             }
             catch
             {
-
             }
         }
     }
@@ -58,7 +51,8 @@ namespace QuartzBasedMacroProgram.Utils
             List<int> targetkey = dataMap.Get("param") as List<int>;
             try
             {
-                Task task = Task.Run(() => {
+                Task task = Task.Run(() =>
+                {
                     KeyboardInputs.PressKeyMulti(targetkey);
                 });
 
@@ -76,11 +70,9 @@ namespace QuartzBasedMacroProgram.Utils
                 }
 
                 await Task.Delay(100);
-
             }
             catch
             {
-
             }
         }
     }
@@ -98,10 +90,11 @@ namespace QuartzBasedMacroProgram.Utils
             try
             {
                 GlobalVars.isworking = true;
-                Task task = Task.Run(() => {
+                Task task = Task.Run(() =>
+                {
                     if (model.iscombomode)
                     {
-                        Console.WriteLine($"-----연속 키 입력 시작: 동시입력 모드 ----- {context.JobDetail.Key}");
+                        Debug.WriteLine($"-----연속 키 입력 시작: 동시입력 모드 ----- {context.JobDetail.Key}");
                         for (int i = 0; i < model.sendkeys.Count; i++)
                         {
                             if (model.isholding)
@@ -109,7 +102,7 @@ namespace QuartzBasedMacroProgram.Utils
                                 if (model.sendkeys[i] != 0)
                                 {
                                     KeyboardInputs.PressKeyMulti(model.holdkey, model.sendkeys[i]);
-                                    Console.WriteLine($"연속 키 입력: 동시입력 모드 동시입력 {(VirtualKeyCode)model.holdkey}, {(VirtualKeyCode)model.sendkeys[i]}");
+                                    Debug.WriteLine($"연속 키 입력: 동시입력 모드 동시입력 {(VirtualKeyCode)model.holdkey}, {(VirtualKeyCode)model.sendkeys[i]}");
                                     Thread.Sleep(model.interval);
                                 }
                             }
@@ -118,7 +111,7 @@ namespace QuartzBasedMacroProgram.Utils
                                 if (model.sendkeys[i] != 0)
                                 {
                                     KeyboardInputs.PressKey(model.sendkeys[i]);
-                                    Console.WriteLine($"연속 키 입력: 동시입력 모드 단독입력 {(VirtualKeyCode)model.sendkeys[i]}");
+                                    Debug.WriteLine($"연속 키 입력: 동시입력 모드 단독입력 {(VirtualKeyCode)model.sendkeys[i]}");
                                     Thread.Sleep(model.interval);
                                 }
                             }
@@ -132,21 +125,21 @@ namespace QuartzBasedMacroProgram.Utils
                                 model.isholding = true;
                             }
                         }
-                        Console.WriteLine($"-----연속 키 입력 종료: 동시입력 모드----- {context.JobDetail.Key}");
+                        Debug.WriteLine($"-----연속 키 입력 종료: 동시입력 모드----- {context.JobDetail.Key}");
                     }
                     else
                     {
-                        Console.WriteLine($"-----연속 키 입력 시작: 단독입력 모드----- {context.JobDetail.Key}");
+                        Debug.WriteLine($"-----연속 키 입력 시작: 단독입력 모드----- {context.JobDetail.Key}");
                         for (int i = 0; i < model.sendkeys.Count; i++)
                         {
                             if (model.sendkeys[i] != 0)
                             {
                                 KeyboardInputs.PressKey(model.sendkeys[i]);
-                                Console.WriteLine($"연속 키 입력: 단독입력 모드 단독입력 {(VirtualKeyCode)model.sendkeys[i]}");
+                                Debug.WriteLine($"연속 키 입력: 단독입력 모드 단독입력 {(VirtualKeyCode)model.sendkeys[i]}");
                                 Thread.Sleep(model.interval);
                             }
                         }
-                        Console.WriteLine($"-----연속 키 입력 종료: 단독입력 모드----- {context.JobDetail.Key}");
+                        Debug.WriteLine($"-----연속 키 입력 종료: 단독입력 모드----- {context.JobDetail.Key}");
                     }
 
                     model.isholding = true;
@@ -166,7 +159,6 @@ namespace QuartzBasedMacroProgram.Utils
                 }
 
                 await Task.Delay(100);
-
             }
             finally
             {
@@ -181,7 +173,7 @@ namespace QuartzBasedMacroProgram.Utils
         {
             await Task.Delay(1);
             JobKey jobKey = context.JobDetail.Key;
-            Console.WriteLine($"SimpleJob says: {jobKey} executing at {DateTime.Now.ToString("r")}");
+            Debug.WriteLine($"SimpleJob says: {jobKey} executing at {DateTime.Now.ToString("r")}");
         }
     }
 }

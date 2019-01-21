@@ -1,6 +1,6 @@
-﻿using System.Windows;
-using GalaSoft.MvvmLight.Threading;
+﻿using GalaSoft.MvvmLight.Threading;
 using log4net;
+using System.Windows;
 
 namespace QuartzBaseMacroProgramWPF
 {
@@ -9,7 +9,8 @@ namespace QuartzBaseMacroProgramWPF
     /// </summary>
     public partial class App : Application
     {
-        public static readonly ILog Logger = QuartzBasedMacroProgram.Utils.Logger.LogWriterMessage;
+        public static readonly ILog Logger = QuartzBaseMacroProgramWPF.Utils.Logger.LogWriterMessage;
+
         static App()
         {
             DispatcherHelper.Initialize();

@@ -1,9 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Runtime.InteropServices;
-using System.Text;
-using System.Threading.Tasks;
 using WindowsInput;
 using WindowsInput.Native;
 
@@ -11,7 +8,6 @@ namespace QuartzBaseMacroProgramWPF.Utils
 {
     public class KeyboardInputs
     {
-
         public static void PressKey(int i)
         {
             new KeyboardSimulator(new InputSimulator()).KeyPress((VirtualKeyCode)i);
@@ -47,6 +43,5 @@ namespace QuartzBaseMacroProgramWPF.Utils
                 return (int)Enum.Parse(typeof(VirtualKeyCode), s.ToUpper().Replace("VK_", ""));
             }
         }
-
     }
 }

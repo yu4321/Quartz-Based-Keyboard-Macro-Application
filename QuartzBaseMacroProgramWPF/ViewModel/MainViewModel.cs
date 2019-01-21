@@ -1,5 +1,4 @@
 ﻿using GalaSoft.MvvmLight;
-using QuartzBaseMacroProgramWPF.Model;
 
 namespace QuartzBaseMacroProgramWPF.ViewModel
 {
@@ -16,7 +15,6 @@ namespace QuartzBaseMacroProgramWPF.ViewModel
         /// </summary>
         public MainViewModel()
         {
-
         }
 
         ////public override void Cleanup()
