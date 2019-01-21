@@ -126,8 +126,8 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
-    <Compile Include="Model\DataItem.cs" />
     <Compile Include="Model\ScheduleModel.cs" />
+    <Compile Include="Model\SettingModel.cs" />
     <Compile Include="TrayService.cs" />
     <Compile Include="Utils\GlobalVars.cs" />
     <Compile Include="Utils\JobList.cs" />
@@ -175,8 +175,11 @@
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>
     </None>
     <AppDesigner Include="Properties\" />
-    <Content Include="settings\setting.json">
+    <Content Include="settings\data.json">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="settings\setting.json">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
   </ItemGroup>
   <ItemGroup>

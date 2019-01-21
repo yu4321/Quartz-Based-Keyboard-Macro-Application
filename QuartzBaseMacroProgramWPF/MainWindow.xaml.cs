@@ -24,6 +24,7 @@ namespace QuartzBaseMacroProgramWPF
             //System.Windows.Forms.SendKeys.Send("{CAPSLOCK}");
             InitializeComponent();
             Closing += (s, e) => ViewModelLocator.Cleanup();
+            GlobalVars.SetSetting();
             GlobalVars.SetQuartzJobs();
             GlobalVars.scheduler.Start();
             TrayService.GetInstance().TurnOn();

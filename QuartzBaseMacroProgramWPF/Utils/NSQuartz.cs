@@ -8,6 +8,7 @@ using Quartz.Impl;
 using Quartz.Impl.Matchers;
 using Quartz.Impl.Triggers;
 using WindowsInput.Native;
+using QuartzBaseMacroProgramWPF.Model;
 
 namespace QuartzBasedMacroProgram.Utils
 {
@@ -143,7 +144,6 @@ namespace QuartzBasedMacroProgram.Utils
             jobName.AppendFormat("job@{0}", Guid.NewGuid().ToString());
             string jobGroup = NSQuartz.Instance.jobGroup;
             JobDetailImpl jobDetail = new JobDetailImpl(jobName.ToString(), jobGroup, job.GetType());
-            //jobDetail.Description = $"작업 분류: {job.GetType()}, 패러미터: {param.ToString()}";
             jobDetail.JobDataMap["param"] = param;
             CronTriggerImpl cronTrigger = new CronTriggerImpl
             (
@@ -155,17 +155,13 @@ namespace QuartzBasedMacroProgram.Utils
             {
                 cronTrigger.Description = $"작업 분류: 키보드 입력, 패러미터: {(VirtualKeyCode)int.Parse(param.ToString())}";
             }
-            else if(job is ExecuteProcess)
-            {
-                cronTrigger.Description = $"작업 분류: 특정 프로세스 실행, 패러미터: {param.ToString()}";
-            }
-            else if(job is CloseProcess)
-            {
-                cronTrigger.Description = $"작업 분류: 특정 프로세스 종료, 패러미터: {param.ToString()}";
-            }
             else if(job is PressKeyMulti)
             {
                 cronTrigger.Description = $"작업 분류: 키보드 다중 입력, 패러미터: {string.Join(", ", ((List<int>)param).Cast<VirtualKeyCode>().ToArray())}";
+            }
+            else if(job is SequenceKey)
+            {
+                cronTrigger.Description = $"작업 분류: 키보드 연속 입력, 패러미터: {(VirtualKeyCode)((SequenceKeyData)param).holdkey} and {string.Join(", ", ((SequenceKeyData)param).sendkeys.Cast<VirtualKeyCode>().ToArray())}";
             }
             else
             {

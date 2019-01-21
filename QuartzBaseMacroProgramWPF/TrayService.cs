@@ -72,7 +72,7 @@ namespace QuartzBaseMacroProgramWPF
 
             m3.Click += delegate
             {
-                Process.Start("notepad.exe", "settings/setting.json");
+                Process.Start("notepad.exe", "settings/data.json");
             };
 
             m4.Click += delegate

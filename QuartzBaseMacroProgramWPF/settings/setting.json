@@ -1,22 +1,3 @@
 ﻿{
-    "presskey": [
-        {
-            "sendkey": "39",
-            "cronexpression": "0 30 7 17-20 JAN ? *"
-        },
-        {
-            "sendkey": "39",
-            "cronexpression": "0 0 18 17-20 JAN ? 2019-2020"
-        }
-    ],
-    "presskeymulti": [
-        {
-            "sendkeys": [
-                "17",
-                "86"
-            ],
-            "cronexpression": "0/10 0/1 * 1/1 * ? *"
-        }
-    ]
-
+    "parsemode" : "string"
 }

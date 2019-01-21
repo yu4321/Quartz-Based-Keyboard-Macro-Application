@@ -1,0 +1,33 @@
+﻿{
+    "presskey": [
+
+    ],
+    "presskeymulti": [
+
+    ],
+    "sequencekey": [
+        {
+            "holdkey": "",
+            "unholdafter": [
+
+            ],
+            "reholdafter": [
+
+            ],
+            "sendkeys": [
+                "NUMLOCK",
+                "CAPITAL",
+                "SCROLL",
+                "CANCEL",
+                "CANCEL",
+                "CANCEL",
+                "NUMLOCK",
+                "CAPITAL",
+                "SCROLL"
+            ],
+            "interval": "0.05",
+            "cronexpression": "0/1 0/1 * 1/1 * ? *"
+        }
+    ]
+
+}

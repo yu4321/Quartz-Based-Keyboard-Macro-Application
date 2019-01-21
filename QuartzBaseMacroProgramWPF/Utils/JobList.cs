@@ -9,104 +9,12 @@ using System.IO;
 using System.Diagnostics;
 using System.Windows.Forms;
 using QuartzBaseMacroProgramWPF.Utils;
+using QuartzBaseMacroProgramWPF.Model;
+using System.Threading;
+using WindowsInput.Native;
 
 namespace QuartzBasedMacroProgram.Utils
 {
-    public class ExecuteProcess : IJob
-    {
-        public async Task Execute(IJobExecutionContext context)
-        {
-            JobDataMap dataMap = context.JobDetail.JobDataMap;
-            FileInfo targetFile = dataMap.Get("param") as FileInfo;
-            try
-            {
-                await Task.Delay(500);
-
-                Task task = Task.Run(() => {
-                    if (File.Exists(targetFile.FullName))
-                    {
-                        try
-                        {
-                            Process.Start(targetFile.FullName);
-                        }
-                        catch
-                        {
-                            Logger.LogWriterMessage.Info($"{targetFile.Name} fails to execute");
-                        }
-                    }
-                });
-
-                try
-                {
-                    Task.WaitAll(task, Task.Delay(3000));
-                }
-                catch (AggregateException exception)
-                {
-                    exception.Handle(ex =>
-                    {
-                        return true;
-                    });
-                    return;
-                }
-
-                await Task.Delay(100);
-
-            }
-            catch
-            {
-
-            }
-        }
-    }
-
-    public class CloseProcess : IJob
-    {
-        public async Task Execute(IJobExecutionContext context)
-        {
-            JobDataMap dataMap = context.JobDetail.JobDataMap;
-            FileInfo targetFile = dataMap.Get("param") as FileInfo;
-            try
-            {
-                await Task.Delay(500);
-
-                Task task = Task.Run(() => {
-                    if (File.Exists(targetFile.FullName))
-                    {
-                        try
-                        {
-                            Process[] pllist = Process.GetProcessesByName(targetFile.Name);
-                            foreach (var x in pllist) x.Kill();
-                        }
-                        catch
-                        {
-                            Logger.LogWriterMessage.Info($"{targetFile.Name} not founds so cannot close");
-                        }
-                    }
-                });
-
-                try
-                {
-                    Task.WaitAll(task, Task.Delay(3000));
-                }
-                catch (AggregateException exception)
-                {
-                    exception.Handle(ex =>
-                    {
-                        return true;
-                    });
-                    return;
-                }
-
-                await Task.Delay(100);
-
-            }
-            catch
-            {
-
-            }
-        }
-    }
-
     public class PressKey : IJob
     {
         public async Task Execute(IJobExecutionContext context)
@@ -115,15 +23,13 @@ namespace QuartzBasedMacroProgram.Utils
             int targetkey = dataMap.GetInt("param");
             try
             {
-                await Task.Delay(500);
-
                 Task task = Task.Run(() => {
                     KeyboardInputs.PressKey(targetkey);
                 });
 
                 try
                 {
-                    Task.WaitAll(task, Task.Delay(3000));
+                    Task.WaitAll(task, Task.Delay(1000));
                 }
                 catch (AggregateException exception)
                 {
@@ -152,15 +58,13 @@ namespace QuartzBasedMacroProgram.Utils
             List<int> targetkey = dataMap.Get("param") as List<int>;
             try
             {
-                await Task.Delay(500);
-
                 Task task = Task.Run(() => {
                     KeyboardInputs.PressKeyMulti(targetkey);
                 });
 
                 try
                 {
-                    Task.WaitAll(task, Task.Delay(3000));
+                    Task.WaitAll(task, Task.Delay(1000));
                 }
                 catch (AggregateException exception)
                 {
@@ -177,6 +81,96 @@ namespace QuartzBasedMacroProgram.Utils
             catch
             {
 
+            }
+        }
+    }
+
+    public class SequenceKey : IJob
+    {
+        public async Task Execute(IJobExecutionContext context)
+        {
+            JobDataMap dataMap = context.JobDetail.JobDataMap;
+            SequenceKeyData model = dataMap.Get("param") as SequenceKeyData;
+            while (GlobalVars.isworking)
+            {
+                Thread.Sleep(10);
+            }
+            try
+            {
+                GlobalVars.isworking = true;
+                Task task = Task.Run(() => {
+                    if (model.iscombomode)
+                    {
+                        Console.WriteLine($"-----연속 키 입력 시작: 동시입력 모드 ----- {context.JobDetail.Key}");
+                        for (int i = 0; i < model.sendkeys.Count; i++)
+                        {
+                            if (model.isholding)
+                            {
+                                if (model.sendkeys[i] != 0)
+                                {
+                                    KeyboardInputs.PressKeyMulti(model.holdkey, model.sendkeys[i]);
+                                    Console.WriteLine($"연속 키 입력: 동시입력 모드 동시입력 {(VirtualKeyCode)model.holdkey}, {(VirtualKeyCode)model.sendkeys[i]}");
+                                    Thread.Sleep(model.interval);
+                                }
+                            }
+                            else
+                            {
+                                if (model.sendkeys[i] != 0)
+                                {
+                                    KeyboardInputs.PressKey(model.sendkeys[i]);
+                                    Console.WriteLine($"연속 키 입력: 동시입력 모드 단독입력 {(VirtualKeyCode)model.sendkeys[i]}");
+                                    Thread.Sleep(model.interval);
+                                }
+                            }
+
+                            if (model.unholdafter.Contains(i))
+                            {
+                                model.isholding = false;
+                            }
+                            else if (model.reholdafter.Contains(i))
+                            {
+                                model.isholding = true;
+                            }
+                        }
+                        Console.WriteLine($"-----연속 키 입력 종료: 동시입력 모드----- {context.JobDetail.Key}");
+                    }
+                    else
+                    {
+                        Console.WriteLine($"-----연속 키 입력 시작: 단독입력 모드----- {context.JobDetail.Key}");
+                        for (int i = 0; i < model.sendkeys.Count; i++)
+                        {
+                            if (model.sendkeys[i] != 0)
+                            {
+                                KeyboardInputs.PressKey(model.sendkeys[i]);
+                                Console.WriteLine($"연속 키 입력: 단독입력 모드 단독입력 {(VirtualKeyCode)model.sendkeys[i]}");
+                                Thread.Sleep(model.interval);
+                            }
+                        }
+                        Console.WriteLine($"-----연속 키 입력 종료: 단독입력 모드----- {context.JobDetail.Key}");
+                    }
+
+                    model.isholding = true;
+                });
+
+                try
+                {
+                    Task.WaitAll(task);
+                }
+                catch (AggregateException exception)
+                {
+                    exception.Handle(ex =>
+                    {
+                        return true;
+                    });
+                    return;
+                }
+
+                await Task.Delay(100);
+
+            }
+            finally
+            {
+                GlobalVars.isworking = false;
             }
         }
     }

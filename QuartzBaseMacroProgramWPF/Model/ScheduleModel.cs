@@ -10,24 +10,40 @@ namespace QuartzBaseMacroProgramWPF.Model
     {
         public List<PressKeyScheduleModel> presskey;
         public List<PressKeyMultiScheduleModel> presskeymulti;
+        public List<SequenceKeyModel> sequencekey;
     }
 
     public class PressKeyScheduleModel
     {
-        public int sendkey;
+        public string sendkey;
         public string cronexpression;
     }
 
     public class PressKeyMultiScheduleModel
     {
-        public List<int> sendkeys;
+        public List<string> sendkeys;
         public string cronexpression;
     }
 
-    public class ExecuteProcessScheduleModel
+    public class SequenceKeyModel
     {
-        public string fullpath;
+        public string holdkey;
+        public List<int> unholdafter;
+        public List<int> reholdafter;
+        public List<string> sendkeys;
+        public double interval;
         public string cronexpression;
+    }
+
+    public class SequenceKeyData
+    {
+        public int holdkey;
+        public List<int> unholdafter;
+        public List<int> reholdafter;
+        public List<int> sendkeys;
+        public TimeSpan interval;
+        public bool iscombomode;
+        public bool isholding;
     }
 
 }

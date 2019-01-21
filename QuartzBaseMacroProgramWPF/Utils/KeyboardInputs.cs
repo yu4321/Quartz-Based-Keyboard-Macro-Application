@@ -24,5 +24,29 @@ namespace QuartzBaseMacroProgramWPF.Utils
             new KeyboardSimulator(new InputSimulator()).ModifiedKeyStroke((VirtualKeyCode)first, bunch.Cast<VirtualKeyCode>());
         }
 
+        public static void PressKeyMulti(int i1, int i2)
+        {
+            new KeyboardSimulator(new InputSimulator()).ModifiedKeyStroke((VirtualKeyCode)i1, (VirtualKeyCode)i2);
+        }
+
+        public static int VKStringtoInt(string s)
+        {
+            try
+            {
+                if (s.Length > 1)
+                {
+                    return (int)Enum.Parse(typeof(VirtualKeyCode), s.ToUpper());
+                }
+                else
+                {
+                    return (int)Enum.Parse(typeof(VirtualKeyCode), ("VK_" + s).ToUpper());
+                }
+            }
+            catch
+            {
+                return (int)Enum.Parse(typeof(VirtualKeyCode), s.ToUpper().Replace("VK_", ""));
+            }
+        }
+
     }
 }
